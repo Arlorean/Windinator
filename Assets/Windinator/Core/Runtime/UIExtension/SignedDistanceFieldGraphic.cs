@@ -166,7 +166,11 @@ public class SignedDistanceFieldGraphic : MaskableGraphic
         else            canvasRenderer.cull = false;
     }}
 
-    static Material RectangleRendererShader;
+    static Material s_rectangleShaderShared;
+    static Material RectangleRendererShader => (s_rectangleShaderShared != null) ? s_rectangleShaderShared :
+        (s_rectangleShaderShared = new Material(Shader.Find("UI/Windinator/RectangleRenderer")) {
+            enableInstancing = true
+        });
 
     protected override void OnEnable()
     {
@@ -174,25 +178,12 @@ public class SignedDistanceFieldGraphic : MaskableGraphic
         UpdateInstanciable();
     }
 
-    private void LoadMaterial()
-    {
-        if (RectangleRendererShader == null)
-        {
-            RectangleRendererShader = new Material(Shader.Find("UI/Windinator/RectangleRenderer"));
-            RectangleRendererShader.enableInstancing = true;
-        }
-        m_material = RectangleRendererShader;
-    }
 
     public override Material defaultMaterial
     {
         get
         {
-            if (m_material == null)
-            {
-                LoadMaterial();
-            }
-            return m_material;
+            return RectangleRendererShader;
         }
     }
 
@@ -591,8 +582,6 @@ public class SignedDistanceFieldGraphic : MaskableGraphic
 
     public override void SetMaterialDirty()
     {
-        if (defaultMaterial == null) LoadMaterial();
-
         base.SetMaterialDirty();
 
         UpdateInstanciable();
@@ -611,15 +600,14 @@ public class SignedDistanceFieldGraphic : MaskableGraphic
 
     void UpdateInstanciable()
     {
-        if (defaultMaterial == null) LoadMaterial();
-
-        bool canInstance = mainTexture == null && MaskRect.z == 0 && MaskRect.w == 0 && MaskOffset == default && m_circleRadius == default;
-        bool isInstance = m_material == RectangleRendererShader;
-
-        if (canInstance != isInstance)
+        if (m_material == null || canInstance != isInstance)
         {
             m_material = canInstance ? RectangleRendererShader : Instantiate(RectangleRendererShader);
             SetAllDirty();
         }
     }
+
+    bool canInstance => mainTexture == null && MaskRect.z == 0 && MaskRect.w == 0 && MaskOffset == default && m_circleRadius == default;
+    bool isInstance => m_material == RectangleRendererShader;
 }
+
