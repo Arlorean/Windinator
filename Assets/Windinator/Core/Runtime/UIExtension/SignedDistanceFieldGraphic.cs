@@ -614,7 +614,7 @@ public class SignedDistanceFieldGraphic : MaskableGraphic
         if (defaultMaterial == null) LoadMaterial();
 
         bool canInstance = mainTexture == null && MaskRect.z == 0 && MaskRect.w == 0 && MaskOffset == default && m_circleRadius == default;
-        bool isInstance = defaultMaterial == RectangleRendererShader;
+        bool isInstance = m_material == RectangleRendererShader;
 
         if (canInstance != isInstance)
         {
