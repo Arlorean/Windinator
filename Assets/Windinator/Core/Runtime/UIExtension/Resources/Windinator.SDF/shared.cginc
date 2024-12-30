@@ -1,6 +1,8 @@
 #include "UnityCG.cginc"
 #include "UnityUI.cginc"
 
+// NOTE: Must use #include_with_pragmas to include this file from Unity 2023+
+// https://docs.unity3d.com/2020.3/Documentation/Manual/shader-include-directives.html
 #pragma vertex vert
 #pragma fragment frag
 #pragma target 2.0
