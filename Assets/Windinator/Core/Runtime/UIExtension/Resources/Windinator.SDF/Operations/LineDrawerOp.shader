@@ -22,7 +22,7 @@ Shader "UI/Windinator/DrawLine"
 
         #include_with_pragmas "../shared.cginc"
 
-        uniform float4 _Points[512];
+        uniform float4 _Points[MAX_ARRAY_SIZE];
         int _PointsCount;
         float _LineThickness;
 
@@ -86,7 +86,7 @@ Shader "UI/Windinator/DrawLine"
 
                 float dist = Decode(color.r);
 
-                for (int i = 0; i < 512; ++i)
+                for (int i = 0; i < MAX_ARRAY_SIZE; ++i)
                 {
                     if (i >= _PointsCount) break;
 

@@ -49,10 +49,10 @@ Shader "UI/Windinator/DrawRect"
 
             #include_with_pragmas "../shared.cginc"
 
-            uniform float4 _Points[512];
-            uniform float4 _PointsExtra[512];
-            uniform float4 _PointsExtra2[512];
-            uniform float4 _Transform[512];
+            uniform float4 _Points[MAX_ARRAY_SIZE];
+            uniform float4 _PointsExtra[MAX_ARRAY_SIZE];
+            uniform float4 _PointsExtra2[MAX_ARRAY_SIZE];
+            uniform float4 _Transform[MAX_ARRAY_SIZE];
 
             int _PointsCount;
 
@@ -75,7 +75,7 @@ Shader "UI/Windinator/DrawRect"
 
                 float dist = Decode(color.r);
 
-                for (int i = 0; i < 512; ++i)
+                for (int i = 0; i < MAX_ARRAY_SIZE; ++i)
                 {
                     if (i >= _PointsCount) break;
 

@@ -5,8 +5,14 @@ namespace Riten.Windinator.Shapes
     [System.Serializable]
     public abstract class ShapeDrawer
     {
+#if UNITY_WEBGL
+        const int MAX_ARRAY_SIZE = 192;
+#else
+        const int MAX_ARRAY_SIZE = 512;
+#endif
+
         public static GenericPool<StaticArray<Vector4>> ArrayPool = new GenericPool<StaticArray<Vector4>>(
-            () => { return new StaticArray<Vector4>(512); }
+            () => { return new StaticArray<Vector4>(MAX_ARRAY_SIZE); }
         );
 
         public ShapeDrawer(CanvasGraphic canvas)

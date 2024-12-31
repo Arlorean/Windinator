@@ -10,6 +10,13 @@
 #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
 #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
 
+// Reduce uniform array sizes on WebGL
+#if defined(SHADER_API_GLES3)
+#define MAX_ARRAY_SIZE 192
+#else
+#define MAX_ARRAY_SIZE 512
+#endif
+
 struct appdata
 {
     float4 vertex   : POSITION;
