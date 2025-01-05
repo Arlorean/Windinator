@@ -1,6 +1,8 @@
 #include "UnityCG.cginc"
 #include "UnityUI.cginc"
 
+#include "SDF.cginc"
+
 // NOTE: Must use #include_with_pragmas to include this file from Unity 2023+
 // https://docs.unity3d.com/2020.3/Documentation/Manual/shader-include-directives.html
 #pragma vertex vert
@@ -148,6 +150,32 @@ float AddSDF(float sdf, float old, float k) {
         return opSmoothIntersection(sdf, old, k);
     }
 }
+
+#define SDF_NORMAL(fn,p) \
+    GetNormal(fn(p), fn(p+float2(1,0)), fn(p-float2(1,0)), fn(p+float2(1,0)), fn(p-float2(1,0)))
+
+float2 GetNormal(float d, float x0, float x1, float y0, float y1)
+{
+    //float x = p.x;
+    //float y = p.y;
+
+    //float d = GETSDF(p, b, r);
+    float sign = d >= 0 ? 1.0f : -1.0f;
+
+    //read neighbour distances, ignoring border pixels
+    //float x0 = GETSDF(p + float2(-1, 0), b, r);
+    //float x1 = GETSDF(p + float2(+1, 0), b, r);
+    //float y0 = GETSDF(p + float2(0, -1), b, r);
+    //float y1 = GETSDF(p + float2(0, +1), b, r);
+
+    //use the smallest neighbour in each direction to calculate the partial deriviates
+    float xgrad = sign * x0 < sign * x1 ? -(x0 - d) : (x1 - d);
+    float ygrad = sign * y0 < sign * y1 ? -(y0 - d) : (y1 - d);
+
+    //combine partial derivatives to get gradient
+    return float2(xgrad, ygrad);
+}
+
 
 void GetRawRect(float2 uv, out float2 position, out float2 halfSize, float extra)
 {

@@ -48,14 +48,6 @@ Shader "UI/Windinator/RectangleRenderer"
             CGPROGRAM
             #include_with_pragmas "shared.cginc"
 
-            float sdRoundedBox(float2 p, float2 b, float4 r )
-            {
-                r.xy = (p.x>0.0)?r.xy : r.zw;
-                r.x  = (p.y>0.0)?r.x  : r.y;
-                float2 q = abs(p)-b+r.x;
-                return min(max(q.x,q.y),0.0) + length(max(q,0.0)) - r.x;
-            }
-
             #define GETSDF sdRoundedBox
 
             float2 getNormal(float2 p, float2 b, float4 r)
@@ -94,7 +86,7 @@ Shader "UI/Windinator/RectangleRenderer"
                 GetRawRect(IN.texcoord, position, halfSize, 0);
 
                 // Signed distance field calculation
-                float dist = sdRoundedBox(position, halfSize, _Roundness);
+                float dist = GETSDF(position, halfSize, _Roundness);
                 float2 normal = getNormal(position, halfSize, _Roundness);
 
                 return fragFunction(IN.texcoord, worldPos, IN.color, dist, position, halfSize, normal);
